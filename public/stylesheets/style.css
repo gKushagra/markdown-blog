@@ -6,3 +6,22 @@ body {
 .blogs-list-container {
   overflow: auto !important;
 }
+
+.editor-container {
+}
+
+.md-editor {
+  width: 100% !important;
+  margin-top: 50px !important;
+}
+
+.md-editor-display {
+}
+
+.edit-page-toolbar {
+  margin-top: 16px !important;
+  position: absolute !important;
+  top: 0 !important;
+  width: calc(100% - 100px) !important;
+  background-color: white !important;
+}

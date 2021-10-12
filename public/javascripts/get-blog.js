@@ -22,3 +22,16 @@ const homeUrl = "http://localhost:14878/index.html";
 
 })();
 
+/**
+ * - Portal
+ *  - passcode access
+ *  - get all blogs
+ *  - edit blog
+ *  - new blog
+ *  - delete blog
+ * 
+ * - Blog
+ *  - get blog from db
+ *  - display blog markdown
+ *  - add comment
+ */
