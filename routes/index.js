@@ -19,22 +19,22 @@ router.post('/authenticate', function (req, res, next) {
     res.status(200).json({
       token: jwt.sign({
         user: "kushagra_gupta"
-      }, 
-      process.env.TOKEN_SECRET)
+      },
+        process.env.TOKEN_SECRET)
     });
   } else {
     res.sendStatus(404);
   }
 });
 
-router.get('/blog', verifyToken, async function (req, res, next) {
+router.get('/blog', async function (req, res, next) {
   try {
     await mongoClient.connect();
     const db = mongoClient.db("markdown_blogs");
     const coll = db.collection("blogs");
     const options = {
       sort: { date: 1 },
-      projection: { id: 1, title: 1, date: 1 }
+      //projection: { id: 1, title: 1, date: 1 }
     };
     var cursor = coll.find({}, options);
   } catch (error) {
@@ -51,7 +51,7 @@ router.get('/blog', verifyToken, async function (req, res, next) {
   }
 });
 
-router.get('/blog/:id', verifyToken, async function (req, res, next) {
+router.get('/blog/:id', async function (req, res, next) {
   const id = req.params.id;
   try {
     await mongoClient.connect();

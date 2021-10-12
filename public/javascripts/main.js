@@ -1,4 +1,4 @@
-const blogUri = "http://localhost:14878/blog?id=";
+const domain = "http://localhost:14878/";
 
 /**
  * 
@@ -46,11 +46,11 @@ function getListItemEl(id, title, date, text) {
     listItemWrapperEl.classList.add("list-group-item");
     listItemWrapperEl.classList.add("list-group-item-action");
 
-    listItemTextEl.innerText = text;
+    listItemTextEl.innerHTML = text;
     let formattedDate = new Date(date);
     listItemDateEl.innerText = formattedDate.toLocaleDateString("en-US");
     listItemTitleEl.innerText = title;
-    listItemWrapperEl.href = blogUri + id;
+    listItemWrapperEl.href = domain + `blog.html?id=${id}`;
     listItemWrapperEl.target = "_blank";
 
     listItemHeaderEl.appendChild(listItemTitleEl);
@@ -61,56 +61,6 @@ function getListItemEl(id, title, date, text) {
     return listItemWrapperEl;
 }
 
-const SAMPLE_BLOGS = [
-    {
-        id: "1",
-        title: "Sample Blog 1",
-        date: new Date(),
-        text: "Hi this is sample blog"
-    },
-    {
-        id: "2",
-        title: "Sample Blog 2",
-        date: new Date(),
-        text: "Hi this is sample blog"
-    },
-    {
-        id: "3",
-        title: "Sample Blog 3",
-        date: new Date(),
-        text: "Hi this is sample blog"
-    },
-    {
-        id: "4",
-        title: "Sample Blog 4",
-        date: new Date(),
-        text: "Hi this is sample blog"
-    },
-    {
-        id: "5",
-        title: "Sample Blog 5",
-        date: new Date(),
-        text: "Hi this is sample blog"
-    }
-];
-
-const SAMPLE_COMMENTS = [
-    {
-        id: "1",
-        blogId: "1",
-        name: "Kush",
-        date: new Date(),
-        test: "Hi! This is a sample comment"
-    },
-    {
-        id: "2",
-        blogId: "1",
-        name: "Anonymous",
-        date: new Date(),
-        test: "Hi! This is a sample comment"
-    }
-];
-
 /**
  * Run on page load
  */
@@ -120,29 +70,47 @@ const SAMPLE_COMMENTS = [
     // Blog { id, title, date, text }
     // Comment { id, blogId, name, date, text }
 
-    // blogs = [];
-    var blogs = SAMPLE_BLOGS;
-    // comments = [];
-    var comments = SAMPLE_COMMENTS;
+    // fetch blogs
+    const getBlogs = async () => {
+        var response = await fetch(domain + 'blog', {
+            method: "GET",
+            mode: "no-cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: "no-referrer",
+        });
 
-    // get the container to show blogs list
-    const blogsList = document.getElementById('blogs-list');
-
-    const listGroupContainer = getListGroupEl();
-
-    // iterate over blogs and generate list items
-    for (let i = 0; i < blogs.length; i++) {
-        let listItemEl = getListItemEl(
-            blogs[i].id,
-            blogs[i].title,
-            blogs[i].date,
-            blogs[i].text.slice(0, 100)
-        );
-        listGroupContainer.appendChild(listItemEl);
+        return response.json();
     }
 
-    // append the list items group to blogs-list div
-    blogsList.appendChild(listGroupContainer);
+    getBlogs()
+        .then(data => {
+            console.log(data);
+            blogs = data;
+            comments = [];
 
+            // get the container to show blogs list
+            const blogsList = document.getElementById('blogs-list');
+
+            const listGroupContainer = getListGroupEl();
+
+            // iterate over blogs and generate list items
+            for (let i = 0; i < blogs.length; i++) {
+                let listItemEl = getListItemEl(
+                    blogs[i].id,
+                    blogs[i].title,
+                    blogs[i].date,
+                    blogs[i].text.slice(0, 250)
+                );
+                listGroupContainer.appendChild(listItemEl);
+            }
+
+            // append the list items group to blogs-list div
+            blogsList.appendChild(listGroupContainer);
+        })
 })();
 

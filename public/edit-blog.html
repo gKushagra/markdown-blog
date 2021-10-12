@@ -20,13 +20,17 @@
 
     <header class="edit-page-toolbar">
         <nav>
-            <button type="button" class="btn btn-light">Cancel</button>
-            <button type="button" class="btn btn-dark">Save</button>
+            <button id="cancel" type="button" class="btn btn-light">Cancel</button>
+            <button id="save-blog" type="button" class="btn btn-dark">Save</button>
+            <button hidden id="delete-blog" type="button" class="btn btn-dark">Delete</button>
         </nav>
         <hr>
     </header>
 
     <!-- <div id="editor-container" class="editor-container"> -->
+    <div class="blog-title-container">
+        <input id="title" name="title" placeholder="Blog Title" type="text" class="blog-title">
+    </div>
     <div id="md-editor" class="md-editor">
         <textarea name="simple-editor" id="simple-md-editor"></textarea>
     </div>
@@ -36,8 +40,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
     <script src="javascripts/edit-blog.js"></script>
 </body>
 

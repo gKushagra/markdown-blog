@@ -12,7 +12,7 @@ body {
 
 .md-editor {
   width: 100% !important;
-  margin-top: 50px !important;
+  margin-top: 32px !important;
 }
 
 .md-editor-display {
@@ -24,4 +24,19 @@ body {
   top: 0 !important;
   width: calc(100% - 100px) !important;
   background-color: white !important;
+}
+
+.blog-title-container {
+  width: 100% !important;
+  margin-top: 50px !important;
+}
+
+.blog-title {
+  width: 100% !important;
+  font-size: 21px !important;
+  font-weight: bold !important;
+  outline: none !important;
+  border: 1px solid gainsboro !important;
+  border-radius: 4px !important;
+  padding: 8px 12px 8px 12px !important;
 }
