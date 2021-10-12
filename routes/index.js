@@ -30,7 +30,7 @@ router.post('/authenticate', function (req, res, next) {
 router.get('/blog', async function (req, res, next) {
   try {
     await mongoClient.connect();
-    const db = mongoClient.db("markdown_blogs");
+    const db = mongoClient.db("markdown_blog");
     const coll = db.collection("blogs");
     const options = {
       sort: { date: 1 },
@@ -43,11 +43,12 @@ router.get('/blog', async function (req, res, next) {
   } finally {
     if ((await cursor.count()) === 0) {
       res.status(200).json([]);
+    } else {
+      let blogs = [];
+      await cursor.forEach(doc => blogs.push(doc));
+      await mongoClient.close();
+      res.status(201).json(blogs);
     }
-    let blogs = [];
-    await cursor.forEach(doc => blogs.push(doc));
-    await mongoClient.close();
-    res.status(201).json(blogs);
   }
 });
 
@@ -55,7 +56,7 @@ router.get('/blog/:id', async function (req, res, next) {
   const id = req.params.id;
   try {
     await mongoClient.connect();
-    const db = mongoClient.db("markdown_blogs");
+    const db = mongoClient.db("markdown_blog");
     const coll = db.collection("blogs");
     const query = { id };
     var result = await coll.findOne(query);
@@ -74,7 +75,7 @@ router.post('/blog', verifyToken, async function (req, res, next) {
   doc.id = nanoid();
   try {
     await mongoClient.connect();
-    const db = mongoClient.db("markdown_blogs");
+    const db = mongoClient.db("markdown_blog");
     const coll = db.collection("blogs");
     const result = await coll.insertOne(doc);
   } catch (error) {
@@ -92,7 +93,7 @@ router.put('/blog/:id', verifyToken, async function (req, res, next) {
   const updatedDoc = req.body;
   try {
     await mongoClient.connect();
-    const db = mongoClient.db("markdown_blogs");
+    const db = mongoClient.db("markdown_blog");
     const coll = db.collection("blogs");
     const query = { id };
     const result = await coll.updateOne(query, updatedDoc);
@@ -110,7 +111,7 @@ router.delete('/blog/:id', verifyToken, async function (req, res, next) {
   const id = req.params.id;
   try {
     await mongoClient.connect();
-    const db = mongoClient.db("markdown_blogs");
+    const db = mongoClient.db("markdown_blog");
     const coll = db.collection("blogs");
     const query = { id };
     var result = await coll.deleteOne(query);
