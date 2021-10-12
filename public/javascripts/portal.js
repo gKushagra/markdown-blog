@@ -1,4 +1,4 @@
-const domain = "http://localhost:14878/";
+const domain = "https://kush-blogs.opensourced.in/";
 
 /**
  * 
