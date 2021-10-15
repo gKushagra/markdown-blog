@@ -1,6 +1,7 @@
 body {
   padding: 50px;
   font-family: "Ubuntu", sans-serif;
+  background-color: #fafafa !important;
 }
 
 .blogs-list-container {
@@ -39,4 +40,18 @@ body {
   border: 1px solid gainsboro !important;
   border-radius: 4px !important;
   padding: 8px 12px 8px 12px !important;
+}
+
+.blog-display {
+  border: 1px solid gainsboro !important;
+  border-radius: 4px;
+  background-color: white !important;
+  padding: 48px 32px 48px 32px !important;
+}
+
+.blog-display pre {
+  border: 1px solid gainsboro !important;
+  border-radius: 4px;
+  padding: 16px 10px 16px 10px !important;
+  background-color: #fafafa !important;
 }

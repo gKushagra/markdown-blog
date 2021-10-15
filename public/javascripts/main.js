@@ -35,10 +35,10 @@ function getListItemEl(id, title, date, text) {
     let listItemWrapperEl = document.createElement('a');
     let listItemTitleEl = document.createElement("h5");
     let listItemDateEl = document.createElement("small");
-    let listItemTextEl = document.createElement("p");
+    // let listItemTextEl = document.createElement("p");
     let listItemHeaderEl = document.createElement("div");
 
-    listItemTextEl.classList.add("mb-1");
+    // listItemTextEl.classList.add("mb-1");
     listItemTitleEl.classList.add("mb-1");
     listItemHeaderEl.classList.add("d-flex");
     listItemHeaderEl.classList.add("w-100");
@@ -46,7 +46,7 @@ function getListItemEl(id, title, date, text) {
     listItemWrapperEl.classList.add("list-group-item");
     listItemWrapperEl.classList.add("list-group-item-action");
 
-    listItemTextEl.innerHTML = text;
+    // listItemTextEl.innerHTML = text;
     let formattedDate = new Date(date);
     listItemDateEl.innerText = formattedDate.toLocaleDateString("en-US");
     listItemTitleEl.innerText = title;
@@ -56,7 +56,7 @@ function getListItemEl(id, title, date, text) {
     listItemHeaderEl.appendChild(listItemTitleEl);
     listItemHeaderEl.appendChild(listItemDateEl);
     listItemWrapperEl.appendChild(listItemHeaderEl);
-    listItemWrapperEl.appendChild(listItemTextEl);
+    // listItemWrapperEl.appendChild(listItemTextEl);
 
     return listItemWrapperEl;
 }
