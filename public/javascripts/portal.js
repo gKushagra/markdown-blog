@@ -88,10 +88,15 @@ function fetchBlogs() {
 
 function enableBtns() {
     const newBlogBtn = document.getElementById("new-blog");
+    const filesBtn = document.getElementById("files");
     const logoutBtn = document.getElementById("logout");
 
     newBlogBtn.addEventListener('click', (e) => {
         window.location.replace(domain + 'edit-blog.html');
+    });
+
+    filesBtn.addEventListener('click', (e) => {
+        window.location.replace(domain + 'media.html');
     });
 
     logoutBtn.addEventListener('click', (e) => {
