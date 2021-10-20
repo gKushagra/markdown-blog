@@ -4,6 +4,9 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 var { nanoid } = require('nanoid');
 var { MongoClient } = require('mongodb');
+var formidable = require('formidable');
+var path = require('path');
+var fs = require('fs');
 
 const mongoUri = process.env.MONGO_URI;
 const mongoClient = new MongoClient(mongoUri);
@@ -126,6 +129,65 @@ router.delete('/blog/:id', verifyToken, async function (req, res, next) {
       res.sendStatus(500);
     }
   }
+});
+
+router.post('/media', verifyToken, async function (req, res, next) {
+
+  var form = formidable.IncomingForm()
+  var uploadDir = path.join(__dirname + process.env.PUBLIC_MEDIA_DIR);
+  console.log(uploadDir);
+
+  form.multiples = false;
+  form.maxFileSize = 100 * 1024 * 1024;
+  form.uploadDir = uploadDir;
+
+  form.parse(req, async (err, fields, files) => {
+    // console.log(files);
+
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+
+    // rename file - save original filename
+    fs.rename(files.uploadFile.path, form.uploadDir + files.uploadFile.name, (err) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus(500)
+      }
+    });
+
+    // save in database
+    let doc = {
+      id: nanoid(),
+      name: files.uploadFile.name,
+      type: files.uploadFile.type,
+      size: files.uploadFile.size,
+      path: form.uploadDir + files.uploadFile.name
+    }
+
+    try {
+      await mongoClient.connect();
+      const db = mongoClient.db("markdown_blog");
+      const coll = db.collection("files");
+      const result = await coll.insertOne(doc);
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+    } finally {
+      await mongoClient.close();
+      res.status(201).json(doc);
+    }
+  });
+
+});
+
+router.get('/media/:id', verifyToken, async function (req, res, next) {
+
+});
+
+router.delete('/media/:id', verifyToken, async function (req, res, next) {
+
 });
 
 function verifyToken(req, res, next) {
