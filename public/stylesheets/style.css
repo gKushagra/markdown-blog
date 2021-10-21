@@ -4,7 +4,8 @@ body {
   background-color: #fafafa !important;
 }
 
-.blogs-list-container {
+.blogs-list-container, 
+.files-list-container {
   overflow: auto !important;
 }
 
