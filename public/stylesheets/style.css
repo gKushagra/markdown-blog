@@ -9,6 +9,14 @@ body {
   overflow: auto !important;
 }
 
+.files-list-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .editor-container {
 }
 
