@@ -1,4 +1,4 @@
-const domain = "https://kush-blogs.opensourced.in/";
+const domain = "https://blog.softwright.in/";
 
 /**
  * 
