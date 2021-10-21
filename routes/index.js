@@ -4,6 +4,9 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 var { nanoid } = require('nanoid');
 var { MongoClient } = require('mongodb');
+var formidable = require('formidable');
+var path = require('path');
+var fs = require('fs');
 
 const mongoUri = process.env.MONGO_URI;
 const mongoClient = new MongoClient(mongoUri);
@@ -121,6 +124,125 @@ router.delete('/blog/:id', verifyToken, async function (req, res, next) {
   } finally {
     await mongoClient.close();
     if (result.deletedCount === 1) {
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(500);
+    }
+  }
+});
+
+router.post('/media', verifyToken, async function (req, res, next) {
+
+  var form = formidable.IncomingForm()
+  var uploadDir = path.join(__dirname + process.env.PUBLIC_MEDIA_DIR);
+  console.log(uploadDir);
+
+  form.multiples = false;
+  form.maxFileSize = 100 * 1024 * 1024;
+  form.uploadDir = uploadDir;
+
+  form.parse(req, async (err, fields, files) => {
+    // console.log(files);
+
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+
+    // rename file - save original filename
+    fs.rename(files.uploadFile.path, form.uploadDir + files.uploadFile.name, (err) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus(500)
+      }
+    });
+
+    // check if this file exists in db
+    try {
+      await mongoClient.connect();
+      const db = mongoClient.db("markdown_blog");
+      const coll = db.collection("files");
+      const query = { name: files.uploadFile.name }
+      var result = await coll.findOne(query);
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+    } finally {
+      await mongoClient.close();
+      if (!result) {
+        // save in database
+        let doc = {
+          id: nanoid(),
+          name: files.uploadFile.name,
+          type: files.uploadFile.type,
+          size: files.uploadFile.size,
+          path: form.uploadDir + files.uploadFile.name
+        }
+
+        try {
+          await mongoClient.connect();
+          const db = mongoClient.db("markdown_blog");
+          const coll = db.collection("files");
+          const result = await coll.insertOne(doc);
+        } catch (error) {
+          console.log(error);
+          res.sendStatus(500);
+        } finally {
+          await mongoClient.close();
+          res.status(201).json("File Uploaded");
+        }
+      } else {
+        res.status(200).json("File Exists");
+      }
+    }
+  });
+
+});
+
+router.get('/files', verifyToken, async function (req, res, next) {
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("markdown_blog");
+    const coll = db.collection("files");
+    var cursor = coll.find({});
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  } finally {
+    if ((await cursor.count()) === 0) {
+      res.status(200).json([]);
+    } else {
+      let files = [];
+      await cursor.forEach(doc => files.push(doc));
+      await mongoClient.close();
+      res.status(201).json(files);
+    }
+  }
+});
+
+router.delete('/media/:id/:name', verifyToken, async function (req, res, next) {
+  console.log(req.params.id, req.params.name);
+  var id = req.params.id;
+  var name = req.params.name;
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("markdown_blog");
+    const coll = db.collection("files");
+    const query = { id };
+    var result = await coll.deleteOne(query);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  } finally {
+    await mongoClient.close();
+    if (result.deletedCount === 1) {
+      var mediaFileDir = path.join(__dirname + process.env.PUBLIC_MEDIA_DIR);
+      fs.unlink(mediaFileDir + name, function (err) {
+        if (err) {
+          console.log(err);
+          res.sendStatus(500);
+        }
+      });
       res.sendStatus(200);
     } else {
       res.sendStatus(500);
